@@ -57,6 +57,7 @@ following \emph{engines}:
 \itemize{
 \item \pkg{R}:  \code{"ranger"} (the default) or \code{"randomForest"}
 \item \pkg{Spark}: \code{"spark"}
+\item \pkg{H2O}: \code{"h2o"}
 }
 }
 \note{
@@ -103,6 +104,14 @@ model, the template of the fit calls are::
 \pkg{spark} regression
 
 \Sexpr[results=rd]{parsnip:::show_fit(parsnip:::rand_forest(mode = "regression"), "spark")}
+
+\pkg{h2o} classification
+
+\Sexpr[results=rd]{parsnip:::show_fit(parsnip:::rand_forest(mode = "classification"), "h2o")}
+
+\pkg{h2o} regression
+
+\Sexpr[results=rd]{parsnip:::show_fit(parsnip:::rand_forest(mode = "regression"), "h2o")}
 
 For \pkg{ranger} confidence intervals, the intervals are
 constructed using the form \code{estimate +/- z * std_error}. For

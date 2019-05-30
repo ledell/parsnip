@@ -36,6 +36,7 @@
 #' \itemize{
 #' \item \pkg{R}:  `"ranger"` (the default) or `"randomForest"`
 #' \item \pkg{Spark}: `"spark"`
+#' \item \pkg{H2O}: `"h2o"`
 #' }
 #'
 #' @section Engine Details:
@@ -67,6 +68,14 @@
 #' \pkg{spark} regression
 #'
 #' \Sexpr[results=rd]{parsnip:::show_fit(parsnip:::rand_forest(mode = "regression"), "spark")}
+#'
+#' \pkg{h2o} classification
+#'
+#' \Sexpr[results=rd]{parsnip:::show_fit(parsnip:::rand_forest(mode = "classification"), "h2o")}
+#'
+#' \pkg{h2o} regression
+#'
+#' \Sexpr[results=rd]{parsnip:::show_fit(parsnip:::rand_forest(mode = "regression"), "h2o")}
 #'
 #' For \pkg{ranger} confidence intervals, the intervals are
 #'  constructed using the form `estimate +/- z * std_error`. For
@@ -214,6 +223,10 @@ translate.rand_forest <- function(x, engine = x$engine, ...) {
     if (x$mode == "classification" && !any(names(arg_vals) == "probability"))
       arg_vals$probability <- TRUE
 
+  }
+
+  if (x$engine == "h2o") {
+    # do we need to do stuff here?
   }
   x$method$fit$args <- arg_vals
 

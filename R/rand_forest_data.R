@@ -4,6 +4,8 @@ rand_forest_arg_key <- data.frame(
   ranger = c("mtry", "num.trees", "min.node.size"),
   spark =
     c("feature_subset_strategy", "num_trees", "min_instances_per_node"),
+  h2o =
+    c("mtries", "ntrees", "min_rows"),
   stringsAsFactors = FALSE,
   row.names =  c("mtry", "trees", "min_n")
 )
@@ -14,6 +16,7 @@ rand_forest_engines <- data.frame(
   ranger =       c(TRUE, TRUE, FALSE),
   randomForest = c(TRUE, TRUE, FALSE),
   spark =        c(TRUE, TRUE, FALSE),
+  h2o =          c(TRUE, TRUE, FALSE),
   row.names =  c("classification", "regression", "unknown")
 )
 
@@ -275,6 +278,52 @@ rand_forest_spark_data <-
         list(
           x = quote(object$fit),
           dataset = quote(new_data)
+        )
+    )
+  )
+
+
+rand_forest_h2o_data <-
+  list(
+    libs = "h2o",
+    fit = list(
+      interface = "data.frame",
+      protect = c("x", "y", "training_frame"),  #not sure about what needs to be protected...
+      #func = c(pkg = "h2o", fun = "h2o.randomForest"),
+      func = c(pkg = "parsnip", fun = "h2o_train"),  #how do we pass the h2o_fun? it defaults to RF for now
+      defaults =
+        list(
+          h2o_fun = "h2o.randomForest"
+        )  #what defaults are needed?
+    ),
+    numeric = list(
+      pre = h2o::as.h2o,
+      post = function(results, object) as.vector(as.data.frame(results$predict)[,1]),
+      func = c(pkg = "h2o", fun = "predict"),
+      args =
+        list(
+          object = quote(object$model),
+          newdata = quote(new_data)
+        )
+    ),
+    class = list(
+      pre = h2o::as.h2o,
+      post = function(results, object) as.vector(as.data.frame(results$predict)[,1]),
+      func = c(pkg = "h2o", fun = "predict"),
+      args =
+        list(
+          object = quote(object$model),
+          newdata = quote(new_data)
+        )
+    ),
+    classprob = list(
+      pre = h2o::as.h2o,
+      post = function(results, object) as.data.frame(results)[,-1],  #do we need to change colnames?
+      func = c(pkg = "h2o", fun = "predict"),
+      args =
+        list(
+          object = quote(object$model),
+          newdata = quote(new_data)
         )
     )
   )

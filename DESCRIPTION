@@ -48,4 +48,5 @@ Suggests:
     ranger,
     rpart,
     MASS,
-    nlme
+    nlme,
+    h2o
